@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Description from "./components/Description/Description";
 import Feedback from "./components/Feedback/Feedback";
 import Options from "./components/Options/Options";
+import Notification from "./components/Notification/Notification";
 
 function App() {
   const feedbackLocalKey = "feedback";
@@ -11,9 +12,7 @@ function App() {
       : { good: 0, neutral: 0, bad: 0 };
   });
   const totalFeedback = feedback.good + feedback.neutral + feedback.bad;
-  const positiveFeedback = Math.round(
-    ((feedback.good + feedback.neutral) / totalFeedback) * 100
-  );
+  const positiveFeedback = Math.round((feedback.good / totalFeedback) * 100);
   useEffect(() => {
     if (totalFeedback > 0) {
       window.localStorage.setItem(feedbackLocalKey, JSON.stringify(feedback));
@@ -41,11 +40,15 @@ function App() {
         onReset={resetFeedback}
         totalFeedback={totalFeedback}
       />
-      <Feedback
-        feedback={feedback}
-        totalFeedback={totalFeedback}
-        positiveFeedback={positiveFeedback}
-      />
+      {totalFeedback > 0 ? (
+        <Feedback
+          feedback={feedback}
+          totalFeedback={totalFeedback}
+          positiveFeedback={positiveFeedback}
+        />
+      ) : (
+        <Notification />
+      )}
     </>
   );
 }
